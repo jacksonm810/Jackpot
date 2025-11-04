@@ -21,7 +21,7 @@ export const MessageCard: React.FC<MessageCardProps> = ({
     <div
       data-id={dataId}
       onClick={onClick}
-      className="relative cursor-pointer bg-[rgba(34,34,34,0.9)] hover:bg-[rgba(40,40,40,0.9)] transition-colors duration-200 rounded-lg p-3 pl-8 w-full text-white"
+      className="relative cursor-pointer bg-[rgba(34,34,34,0.9)] hover:bg-[rgba(40,40,40,0.9)] transition-colors duration-200 rounded-lg p-3 pl-8 max-w-full text-white"
     >
       {/* Avatar with complex border effect */}
       <div className="absolute left-[-12px] top-3 w-9 h-9 aspect-square overflow-hidden bg-[#303045] transition-all duration-300 rounded-[11px] p-[1px]">

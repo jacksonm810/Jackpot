@@ -5,7 +5,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="hidden lg:block fixed right-0 top-[109px] w-80 h-[calc(100vh-109px)] bg-[#141414] border-l border-border/50 overflow-y-auto">
+    <aside className="hidden lg:block fixed right-0 top-[109px] w-80 h-[calc(100vh-109px)] overflow-y-auto">
       <div className="p-3 space-y-3">
         {/* Current Round */}
         <div className="glass-panel rounded-xl p-3 border border-primary/30">

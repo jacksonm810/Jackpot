@@ -18,7 +18,7 @@ export const ChatPausedBanner: React.FC<ChatPausedBannerProps> = ({
     <div
       data-id={dataId}
       onClick={onClick}
-      className={`fixed bottom-24 left-2 right-2 z-50 w-full max-w-[333px] cursor-pointer rounded-md p-[1px] bg-[#141414] transition-all duration-300 ease-in-out hover:scale-105 ${className}`}
+      className={`relative mx-auto w-full max-w-[333px] cursor-pointer rounded-md p-[1px] bg-[#141414] transition-all duration-300 ease-in-out hover:scale-105 ${className}`}
       style={{
         backgroundImage: 'linear-gradient(rgb(51, 51, 51), rgb(19, 19, 19))',
         boxShadow:

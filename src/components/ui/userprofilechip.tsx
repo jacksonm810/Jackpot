@@ -13,7 +13,7 @@ export const UserProfileChip: React.FC<UserProfileChipProps> = ({
   return (
     <div
       data-id={dataId}
-      className="flex items-center gap-1 w-fit bg-[#141414] text-white px-1 py-0.5 mb-1.5"
+      className="flex items-center gap-1 w-fit max-w-full bg-[#141414] text-white px-1 py-0.5 mb-1.5"
     >
       <UserreplyIcon className="h-3 w-3 flex-shrink-0 -scale-x-100 opacity-25" />
       <div className="relative h-5 w-5 flex-shrink-0 cursor-pointer overflow-hidden rounded-full border border-[#222222] mr-0.5 transition-all duration-300 hover:brightness-110">
