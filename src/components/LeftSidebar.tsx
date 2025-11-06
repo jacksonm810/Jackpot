@@ -224,11 +224,8 @@ const LeftSidebar = () => {
           <div className="relative">
             <Input
               placeholder="Type Message Here..."
-              className="bg-secondary/50 border-border/50 pr-10"
+              className="bg-secondary/50 border-border/50"
             />
-            <button className="absolute right-2 top-1/2 -translate-y-1/2 text-primary">
-              😊
-            </button>
           </div>
           <div className="flex items-center justify-between mt-2 text-xs">
             <button className="text-muted-foreground hover:text-foreground">
