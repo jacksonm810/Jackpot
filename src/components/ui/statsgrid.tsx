@@ -15,7 +15,7 @@ export function StatsGrid({ stats, 'data-id': dataId }: StatsGridProps) {
   return (
     <div
       data-id={dataId}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-[880px] bg-[#0d0d0d] text-white"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full text-white"
     >
       {stats.map((stat, index) => (
         <StatCard key={index} {...stat} />

@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { SidebarProvider } from "@/contexts/SidebarContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import 'swiper/css';
 
 const queryClient = new QueryClient();
 

@@ -1,3 +1,14 @@
+@font-face {
+  font-family: 'MyCustomFont';
+  src: url('assets/Airstrike.f4da9d40.ttf') format('ttf'),
+       url('assets/Airstrike.f4da9d40.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.custom-text {
+  font-family: 'MyCustomFont', sans-serif;
+}
 #root {
   max-width: 1280px;
   margin: 0 auto;

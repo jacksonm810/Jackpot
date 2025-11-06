@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Airstrike Font */
+@font-face {
+  font-family: 'Airstrike';
+  src: url('/assets/Airstrike.f4da9d40.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
@@ -61,6 +70,24 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for all scrollable elements */
+  * {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
   }
 }
 
@@ -106,6 +133,36 @@ All colors MUST be HSL.
       transform: translateY(-20px);
     }
   }
+  
+  @keyframes arrow-bounce {
+    0%, 100% {
+      transform: translate(-50%, 0px);
+    }
+    50% {
+      transform: translate(-50%, 8px);
+    }
+  }
+  
+  .animate-arrow-bounce {
+    animation: arrow-bounce 3s ease-in-out infinite;
+  }
+  
+  @keyframes scroll-infinite {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+  
+  .animate-scroll-infinite {
+    animation: scroll-infinite 50s linear infinite;
+  }
+  
+  /* .animate-scroll-infinite:hover {
+    animation-play-state: paused;
+  } */
   
   .scrollbar-hide {
     -ms-overflow-style: none;  /* IE and Edge */

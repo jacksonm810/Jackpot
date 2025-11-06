@@ -34,17 +34,21 @@ export const JackpotBetting: React.FC<JackpotBettingProps> = ({
       className={`flex flex-col xl:flex-row w-full justify-between gap-4 xl:gap-6 xl:items-center text-white p-4 sm:p-5 ${className}`}
     >
       {/* Header Section */}
-      <div className="flex flex-1 gap-2 sm:gap-3 xl:gap-4 items-center min-w-0">
-        <div className="flex flex-col min-w-0 flex-shrink-0">
+      <div className="flex flex-1 gap-2 sm:gap-3 xl:gap-6 items-center min-w-0">
+        <div className="flex flex-col min-w-0 flex-1">
           <div className="mb-2 sm:mb-2.5 flex items-center gap-2">
             <BigcoinIcon className="w-5 h-5 sm:w-6 sm:h-6 text-[#6741ff] flex-shrink-0" />
             <h2
-              className="text-xl sm:text-2xl xl:text-[32px] font-normal leading-7 m-0 truncate"
+              className="text-xl sm:text-2xl xl:text-[32px] leading-7 m-0 uppercase whitespace-nowrap"
               style={{
                 fontFamily: 'Airstrike, sans-serif',
+                fontWeight: 700,
+                letterSpacing: '0.02em',
+                WebkitFontSmoothing: 'antialiased',
+                MozOsxFontSmoothing: 'grayscale',
               }}
             >
-              Jackpot
+              JACKPOT
             </h2>
           </div>
           <h4 className="text-xs sm:text-sm font-medium text-[#bfbfcd] whitespace-nowrap m-0">
@@ -54,7 +58,7 @@ export const JackpotBetting: React.FC<JackpotBettingProps> = ({
         <img
           src="/assets/halftone.e9491561.webp"
           alt="Jackpot decoration"
-          className="hidden xl:block h-[79px] w-[109px] object-cover flex-shrink-0"
+          className="hidden xl:block h-[79px] w-[109px] object-cover flex-shrink-0 ml-2"
         />
       </div>
       {/* Betting Controls */}

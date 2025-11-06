@@ -125,7 +125,7 @@ export const WinnerCard: React.FC<WinnerCardProps> = ({
           }}
         >
           <img
-            src="/static/image/grid.bb6dda07.webp"
+            src="https://solpot.com/static/image/grid.bb6dda07.webp"
             alt=""
             className="absolute left-0 top-0 w-full h-full"
           />
