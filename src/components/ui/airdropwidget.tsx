@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DegenchatIcon, ArrowIcon, CoinIcons, SolanaIcon, DropIcon, EvenIcon } from '../icons'
+import { DegenchatIcon, ArrowIcon, CoinIcons, SolanaIcon, DropIcon, EvenIcon, ChevronIcon } from '../icons'
 export interface AirdropWidgetProps {
   chatName?: string
   notificationCount?: number
@@ -8,6 +8,8 @@ export interface AirdropWidgetProps {
   isJoined?: boolean
   onJoinClick?: () => void
   onCollapseClick?: () => void
+  onToggleSidebar?: () => void
+  isSidebarVisible?: boolean
   'data-id'?: string
 }
 export const AirdropWidget: React.FC<AirdropWidgetProps> = ({
@@ -18,6 +20,8 @@ export const AirdropWidget: React.FC<AirdropWidgetProps> = ({
   isJoined = false,
   onJoinClick,
   onCollapseClick,
+  onToggleSidebar,
+  isSidebarVisible = true,
   'data-id': dataId,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -30,7 +34,7 @@ export const AirdropWidget: React.FC<AirdropWidgetProps> = ({
       }}
     >
       {/* Header */}
-      <div className="mb-3 flex gap-2">
+      <div className="mb-3 flex gap-2 items-center">
         <button 
           onClick={onCollapseClick}
           className="relative flex h-10 w-full min-w-10 items-center justify-between overflow-hidden rounded-lg border border-[#3b3b3b] bg-[#303030] px-4 text-sm font-medium leading-5 transition-all hover:bg-[#3b3b3b]"
@@ -60,6 +64,23 @@ export const AirdropWidget: React.FC<AirdropWidgetProps> = ({
             </p>
           </div>
         </button>
+        {/* Chevron Toggle Button - Inside sidebar header */}
+        {onToggleSidebar && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSidebar();
+            }}
+            className="flex h-10 w-10 items-center justify-center rounded-lg border border-[#3b3b3b] bg-[#303030] transition-all hover:bg-[#3b3b3b] flex-shrink-0"
+            aria-label={isSidebarVisible ? "Hide sidebar" : "Show sidebar"}
+          >
+            <ChevronIcon 
+              className={`transition-transform duration-300 drop-shadow-[0_2px_0_rgba(0,0,0,0.5)] ${
+                isSidebarVisible ? '' : 'rotate-180'
+              }`}
+            />
+          </button>
+        )}
       </div>
       {/* Main Content Area */}
       <div

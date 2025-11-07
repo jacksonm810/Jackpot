@@ -3,7 +3,7 @@ import { AirdropWidget } from "./ui/airdropwidget";
 import { MessageCard } from "./ui/messagecard";
 import { chatMessages } from "./data/message_info";
 import { ChatPausedBanner } from "./ui/chatpausebanner";
-import { PauseIcon } from "./icons";
+import { PauseIcon, ChevronIcon } from "./icons";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { UserProfilePopup } from "./ui/userprofilepopup";
 import { UserStats } from "./ui/UserStatsModal/userstats";
@@ -182,7 +182,11 @@ const LeftSidebar = () => {
         <div className="flex flex-col h-full">
         {/* Airdrop Header */}
         <div className="border-b border-border/50">
-          <AirdropWidget onCollapseClick={() => setIsLeftSidebarVisible(false)} />
+          <AirdropWidget 
+            onCollapseClick={() => setIsLeftSidebarVisible(false)} 
+            onToggleSidebar={() => setIsLeftSidebarVisible(!isLeftSidebarVisible)}
+            isSidebarVisible={isLeftSidebarVisible}
+          />
         </div>
 
         {/* Chat Messages */}
@@ -272,7 +276,6 @@ const LeftSidebar = () => {
         </div>
       </div>
     )}
-    
     {/* Message Icon - Shown when sidebar is hidden */}
     {!isLeftSidebarVisible && (
       <button
