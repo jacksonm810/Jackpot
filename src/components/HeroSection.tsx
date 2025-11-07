@@ -4,7 +4,7 @@ import { CoinflipGameList } from "./ui/CoinFlip/coinflipgamelist";
 import { AffiliatesDashboard } from "./ui/Affiiates/affiliatesdashboard";
 import { TermsOfService } from "./ui/Header/termsofservice";
 
-export const HeroSection = () => {
+const HeroSection = () => {
   const { activeLink } = useNav();
 
   return (
@@ -38,4 +38,4 @@ export const HeroSection = () => {
   );
 };
 
-
+export default HeroSection;
