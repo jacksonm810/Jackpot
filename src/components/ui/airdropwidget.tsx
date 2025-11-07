@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DegenchatIcon, PinkIcon, ArrowIcon, CoinIcons, SolanaIcon, DropIcon, EvenIcon } from '../icons'
+import { DegenchatIcon, ArrowIcon, CoinIcons, SolanaIcon, DropIcon, EvenIcon } from '../icons'
 export interface AirdropWidgetProps {
   chatName?: string
   notificationCount?: number
@@ -21,10 +21,6 @@ export const AirdropWidget: React.FC<AirdropWidgetProps> = ({
   'data-id': dataId,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false)
-  const handleCollapseClick = () => {
-    setIsExpanded(!isExpanded)
-    onCollapseClick?.()
-  }
   return (
     <div
       data-id={dataId}
@@ -35,7 +31,10 @@ export const AirdropWidget: React.FC<AirdropWidgetProps> = ({
     >
       {/* Header */}
       <div className="mb-3 flex gap-2">
-        <button className="relative flex h-10 w-full min-w-10 items-center justify-between overflow-hidden rounded-lg border border-[#3b3b3b] bg-[#303030] px-4 text-sm font-medium leading-5 transition-all hover:bg-[#3b3b3b]">
+        <button 
+          onClick={onCollapseClick}
+          className="relative flex h-10 w-full min-w-10 items-center justify-between overflow-hidden rounded-lg border border-[#3b3b3b] bg-[#303030] px-4 text-sm font-medium leading-5 transition-all hover:bg-[#3b3b3b]"
+        >
           <div className="flex w-[175px] items-center gap-1 overflow-hidden text-ellipsis whitespace-nowrap font-[550] text-[#e3e3e3]">
             <DegenchatIcon
               className="flex-shrink-0"
@@ -60,16 +59,6 @@ export const AirdropWidget: React.FC<AirdropWidgetProps> = ({
               {notificationCount}
             </p>
           </div>
-        </button>
-        <button
-          onClick={handleCollapseClick}
-          className="flex h-10 w-10 min-w-10 items-center justify-center overflow-hidden rounded-lg border border-[#3b3b3b] bg-[#303030] p-0 text-sm font-medium leading-5 transition-all hover:bg-[#3b3b3b]"
-        >
-          <PinkIcon
-            style={{
-              filter: 'drop-shadow(0 2px 0 rgba(0,0,0,0.5))',
-            }}
-          />
         </button>
       </div>
       {/* Main Content Area */}

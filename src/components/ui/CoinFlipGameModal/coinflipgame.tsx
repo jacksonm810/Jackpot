@@ -1,6 +1,7 @@
 import React from 'react'
 import { Icon1, Icon2, SolanaIcon, Icon8, Icon9 } from './Icons'
 import { CoinflipGameProps } from './coinflipgameprops'
+
 export const CoinflipGame: React.FC<CoinflipGameProps> = ({
   'data-id': dataId,
   gameId = '#4203629',

@@ -43,7 +43,10 @@ const Header = () => {
           <Logo />
         </div>
         <div className="flex flex-col flex-1">
-          <Navbar />
+          <Navbar onLinkClick={(href) => {
+            console.log('Navigating to:', href);
+            setActiveLink(href);
+          }} />
           <Navigation
             activeLink={activeLink}
             onLinkClick={(href) => {

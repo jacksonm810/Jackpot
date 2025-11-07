@@ -14,6 +14,7 @@ export interface NavbarProps {
   navigationLinks?: NavigationLink[]
   totalBets?: number
   onSupportClick?: () => void
+  onLinkClick?: (href: string) => void
   className?: string
   'data-id'?: string
 }
@@ -42,9 +43,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   ],
   totalBets = 10878269,
   onSupportClick,
+  onLinkClick,
   className = '',
   'data-id': dataId,
 }) => {
+  const handleLinkClick = (href: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    onLinkClick?.(href);
+  };
   const renderIcon = (iconType: 'twitter' | 'discord') => {
     return iconType === 'twitter' ? (
       <XIcon className="h-3.5 w-3.5 drop-shadow-[0_2px_0_rgba(0,0,0,0.5)]" />
@@ -77,7 +83,11 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Navigation Links */}
         <div className="ml-1 flex items-center gap-4">
           {navigationLinks.map((link, index) => (
-            <a key={index} href={link.href}>
+            <a 
+              key={index} 
+              href={link.href}
+              onClick={(e) => handleLinkClick(link.href, e)}
+            >
               <p className="m-0 text-sm font-medium text-[#a2a2a2] transition-colors duration-150 hover:text-white">
                 {link.label}
               </p>

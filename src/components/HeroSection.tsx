@@ -2,8 +2,9 @@ import { useNav } from "@/contexts/NavContext";
 import Jackpot from "./ui/Jakpot/Jakpot";
 import { CoinflipGameList } from "./ui/CoinFlip/coinflipgamelist";
 import { AffiliatesDashboard } from "./ui/Affiiates/affiliatesdashboard";
+import { TermsOfService } from "./ui/Header/termsofservice";
 
-const HeroSection = () => {
+export const HeroSection = () => {
   const { activeLink } = useNav();
 
   return (
@@ -28,8 +29,13 @@ const HeroSection = () => {
           <AffiliatesDashboard />
         </div>
       )}
+      {activeLink === "/terms" && (
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+          <TermsOfService />
+        </div>
+      )}
     </section>
   );
 };
 
-export default HeroSection;
+

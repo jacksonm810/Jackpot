@@ -1,4 +1,3 @@
-import { ChevronLeft } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AirdropWidget } from "./ui/airdropwidget";
 import { MessageCard } from "./ui/messagecard";
@@ -183,7 +182,7 @@ const LeftSidebar = () => {
         <div className="flex flex-col h-full">
         {/* Airdrop Header */}
         <div className="border-b border-border/50">
-          <AirdropWidget />
+          <AirdropWidget onCollapseClick={() => setIsLeftSidebarVisible(false)} />
         </div>
 
         {/* Chat Messages */}
@@ -274,20 +273,34 @@ const LeftSidebar = () => {
       </div>
     )}
     
-    {/* Toggle Button */}
-    <button
-      onClick={() => setIsLeftSidebarVisible(!isLeftSidebarVisible)}
-      className={`hidden sm:flex fixed top-[120px] z-50 items-center justify-center w-8 h-12 bg-[#1a1a1a] border border-border/50 rounded-r-md hover:bg-[#252525] transition-all duration-300 ${
-        isLeftSidebarVisible ? 'left-[300px] lg:left-[350px]' : 'left-0'
-      }`}
-      aria-label={isLeftSidebarVisible ? 'Hide sidebar' : 'Show sidebar'}
-    >
-      <ChevronLeft 
-        className={`w-4 h-4 text-muted-foreground transition-transform duration-300 ${
-          isLeftSidebarVisible ? '' : 'rotate-180'
-        }`}
-      />
-    </button>
+    {/* Message Icon - Shown when sidebar is hidden */}
+    {!isLeftSidebarVisible && (
+      <button
+        onClick={() => setIsLeftSidebarVisible(true)}
+        className="fixed top-40 z-50 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-b from-[#303030] to-[#1a1a1a] border border-[#3b3b3b] p-4 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:border-[#6741ff] -translate-y-1/2"
+        aria-label="Show sidebar"
+        style={{
+          boxShadow: '0 4px 20px rgba(103, 65, 255, 0.3)',
+        }}
+      >
+        {/* Chat Bubble Icon */}
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="text-white"
+        >
+          <path
+            d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2Z"
+            fill="currentColor"
+          />
+        </svg>
+        {/* Message Count */}
+        <span className="text-sm font-bold text-white">160</span>
+      </button>
+    )}
     </>
   );
 };
