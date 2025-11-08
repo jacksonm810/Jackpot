@@ -1,7 +1,7 @@
-import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
-import LeftSidebar from "@/components/LeftSidebar";
-import { Footer } from "@/components/ui/Footer";
+import Header from "@/layout/Header";
+import HeroSection from "@/layout/HeroSection";
+import LeftSidebar from "@/layout/LeftSidebar";
+import { Footer } from "@/layout/Footer";
 import { useSidebar } from "@/contexts/SidebarContext";
 import { NavProvider } from "@/contexts/NavContext";
 
