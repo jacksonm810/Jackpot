@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
-import Carousel3D from "../3d-carousel/src/index.js";
+import Carousel3D from "@/shared/components/3d-carousel/src/index.js";
 
 // Declare the custom element for TypeScript
 declare global {
