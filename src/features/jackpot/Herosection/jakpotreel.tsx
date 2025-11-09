@@ -23,10 +23,9 @@ export function JackpotReel({
   'data-id': dataId,
   onCardClick,
 }: JackpotReelProps) {
-  const totalSlots = 12
-  // Increased radius for better spacing in full circle
-  const radius = 400 
-  const angleStep = 800/20 // Full circle: 360 degrees
+  const totalSlots = 5 // Show 5 cards in the carousel
+  const cardSpacing = 198 // Horizontal spacing between cards for better separation
+  const maxDepth = 120 // Maximum Z-depth for perspective
   
   // Fill empty slots with waiting placeholders
   const allSlots = [...players]
@@ -39,51 +38,59 @@ export function JackpotReel({
       isActive: false,
     })
   }
+  
   return (
     <div
       data-id={dataId}
       className="relative flex items-center justify-center"
       style={{
-        height: '260px',
+        height: '100px',
         width: '100%',
-        minWidth: '726px',
+        minWidth: '900px',
         backgroundColor: 'transparent',
         color: '#fff',
-        perspective: '2000px',
+        perspective: '1400px',
         perspectiveOrigin: '50% 50%',
       }}
     >
       <MotionBlurFilters />
-      {/* 3D Carousel Container - Full circle arrangement */}
+      {/* 3D Carousel Container - Horizontal arc arrangement */}
       <div
         className="relative"
         style={{
-          width: `${radius * 2}px`,
-          height: `${radius * 2}px`,
+          width: '100%',
+          height: '100%',
           position: 'relative',
           transformStyle: 'preserve-3d',
           transform: 'translateZ(0)',
         }}
       >
         {allSlots.slice(0, totalSlots).map((player, index) => {
-          // Arrange in full circle (360 degrees) - evenly distributed
-          const angleDegrees = (index * angleStep) + rotation
-          const angle = angleDegrees * (Math.PI / 180)
+          // Calculate position from center
+          const centerIndex = (totalSlots - 1) / 2
+          const offsetFromCenter = index - centerIndex
           
-          const x = Math.sin(angle) * radius
-          const z = Math.cos(angle) * radius
+          // Horizontal position
+          const x = offsetFromCenter * cardSpacing
           
-          // Rotate each card to face forward (towards viewer/camera)
-          const rotateY = -angleDegrees
+          // Depth calculation - cards at edges go deeper (further back)
+          const normalizedOffset = Math.abs(offsetFromCenter) / centerIndex
+          const z = -normalizedOffset * maxDepth
           
-          // Calculate scale based on z-depth for perspective effect
-          // Cards closer to front (higher z) are larger
-          const normalizedZ = (z + radius) / (radius * 2) // 0 to 1, where 1 is front
-          const depthScale = 0.7 + normalizedZ * 0.3 // Cards at front are ~1.0, back are ~0.7
-          const opacity = Math.max(0.4, Math.min(1, 0.4 + normalizedZ * 0.6))
+          // Rotation - cards at edges rotate slightly towards center
+          const rotateY = -offsetFromCenter * 15 // 15 degrees per step from center
           
-          // Card size - slightly smaller for better spacing
-          const cardWidth = 140
+          // Scale based on depth - center cards larger, edge cards smaller
+          const depthScale = 1 - normalizedOffset * 0.15 // 0.85 to 1.0
+          
+          // Opacity based on depth
+          const opacity = 1 - normalizedOffset * 0.3 // 0.7 to 1.0
+          
+          // Card size - matching design
+          const cardWidth = 200
+          
+          // Z-index - center cards on top
+          const zIndex = Math.round((1 - normalizedOffset) * 100)
           
           return (
             <div
@@ -96,12 +103,11 @@ export function JackpotReel({
                 width: `${cardWidth}px`,
                 transformStyle: 'preserve-3d',
                 backfaceVisibility: 'hidden',
-                // Transform order: First position the card, then rotate to face forward
                 transform: `translate(-50%, -50%) translate3d(${x}px, 0, ${z}px) rotateY(${rotateY}deg) scale(${depthScale * scale})`,
                 opacity: opacity,
                 willChange: 'transform, opacity',
-                pointerEvents: z > -radius * 0.5 ? 'auto' : 'none',
-                zIndex: Math.round(normalizedZ * 100), // Higher z-index for front cards
+                pointerEvents: 'auto',
+                zIndex: zIndex,
               }}
             >
               <GameCard player={player} />

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { StatsGrid } from "../statsgrid";
 import { JackpotBetting } from "../Jakpotbetting";
 import { HistoryHeader } from "../historyheader";
@@ -6,11 +6,11 @@ import { HistoryFooter } from "../historyfooter";
 import { UserCard } from "@/shared/components/usercard";
 import { userCardInfo } from "@/shared/data/usercard_infor";
 import { GameCard } from "../Herosection/gamecard";
-import { JackpotReel } from "../Herosection/jakpotreel";
 import { gamecards } from "@/shared/data/gamecard_info";
 import { UserStats } from "@/shared/components/UserStatsModal/userstats";
 import type { UserStatsProps } from "@/shared/components/UserStatsModal/userstats";
 import { WinnerCard } from "../winnercard";
+import ThreeDCarouselWrapper, { ThreeDCarouselRef } from "@/shared/components/ui/ThreeDCarouselWrapper";
 
 const Jackpot = () => {
   const [timeLeft, setTimeLeft] = useState({ minutes: 0, seconds: 0 });
@@ -19,6 +19,7 @@ const Jackpot = () => {
   const [selectedUserStats, setSelectedUserStats] =
     useState<UserStatsProps | null>(null);
   const [is3DView, setIs3DView] = useState(false);
+  const carouselRef = useRef<ThreeDCarouselRef>(null);
 
   const [showWinnerCard, setShowWinnerCard] = useState(true);
   const [winnerData, setWinnerData] = useState({
@@ -121,6 +122,32 @@ const Jackpot = () => {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isUserStatsModalOpen, handleCloseModal]);
 
+  // Auto-rotate 3D carousel
+  useEffect(() => {
+    if (!is3DView || !carouselRef.current) return;
+
+    const rotationSpeed = 0.1; // degrees per frame (reduced to 1/3 of original speed)
+    let rotation = 0;
+    let animationFrame: number;
+
+    const animate = () => {
+      rotation -= rotationSpeed; // Negative for left rotation
+      if (rotation <= -360) {
+        rotation = rotation + 360;
+      }
+      carouselRef.current?.rotate(rotation);
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
+    };
+  }, [is3DView]);
+
   const stats = [
     { label: "Jackpot Value", value: jackpotValue.toFixed(3), highlighted: true, icon: "/assets/solana.png" },
     { label: "Your Wager", value: "0.000", icon: "/assets/solana.png" },
@@ -181,27 +208,115 @@ const Jackpot = () => {
                     </svg>
                     <span>2D</span>
                   </>
+                  
                 )}
               </button>
-              <div className={`rounded-2xl backdrop-blur-sm px-3 sm:px-4 py-6 sm:py-8 flex items-center justify-center ${is3DView ? 'overflow-visible' : 'overflow-hidden'}`} style={{ backgroundColor: "rgba(22,22,22,1)", minHeight: 260 }}>
+              <div className={`rounded-2xl backdrop-blur-sm px-3 sm:px-4 sm:py-8 flex items-center justify-center ${is3DView ? 'overflow-visible' : 'overflow-hidden'}`} style={{ backgroundColor: "rgba(22,22,22,1)", minHeight: 260 }}>
                 {is3DView ? (
-                  <div className="w-full flex items-center justify-center" style={{ overflow: 'visible' }}>
-                    <JackpotReel 
-                      players={gamecards} 
-                      rotation={0}
-                      scale={1}
-                      onCardClick={handleGameCardClick}
-                    />
+                  <div className="w-full flex items-center justify-center" style={{ overflow: 'visible', height: '230px'}}>
+                    <ThreeDCarouselWrapper
+                      ref={carouselRef}
+                      rotateNegative={true}
+                      style={{ width: "100%", height: "100%" }}
+                    >
+                      <style>
+                        {`
+                          #perspective-container {
+                            perspective: 500px !important;
+                          }
+                          #items-container > div {
+                            width: 210px;
+                            height: 210px;
+                            margin: 0px;
+                            will-change: transform;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            backface-visibility: hidden;
+                            transform-style: preserve-3d;
+                          }
+                          #items-container {
+                            will-change: transform;
+                            transform-style: preserve-3d;
+                          }
+                          /* Ensure Tailwind utilities work in Shadow DOM */
+                          .flex { display: flex; }
+                          .flex-col { flex-direction: column; }
+                          .items-center { align-items: center; }
+                          .justify-center { justify-content: center; }
+                          .relative { position: relative; }
+                          .absolute { position: absolute; }
+                          .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+                          .w-full { width: 100%; }
+                          .h-full { height: 100%; }
+                          .rounded-xl { border-radius: 0.75rem; }
+                          .rounded-lg { border-radius: 0.5rem; }
+                          .rounded-full { border-radius: 9999px; }
+                          .rounded-\\[10px\\] { border-radius: 10px; }
+                          .rounded-\\[11px\\] { border-radius: 11px; }
+                          .rounded-\\[13px\\] { border-radius: 13px; }
+                          .rounded-\\[14px\\] { border-radius: 14px; }
+                          .p-0\.5 { padding: 0.125rem; }
+                          .p-2 { padding: 0.5rem; }
+                          .mt-1 { margin-top: 0.25rem; }
+                          .mt-3 { margin-top: 0.75rem; }
+                          .mb-3 { margin-bottom: 0.75rem; }
+                          .gap-1\.5 { gap: 0.375rem; }
+                          .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+                          .text-base { font-size: 1rem; line-height: 1.5rem; }
+                          .font-semibold { font-weight: 600; }
+                          .font-bold { font-weight: 700; }
+                          .text-white { color: rgb(255 255 255); }
+                          .text-\\[\\#8c8c8c\\] { color: #8c8c8c; }
+                          .max-w-\\[120px\\] { max-width: 120px; }
+                          .truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+                          .tracking-wide { letter-spacing: 0.025em; }
+                          .opacity-0 { opacity: 0; }
+                          .opacity-30 { opacity: 0.3; }
+                          .opacity-50 { opacity: 0.5; }
+                          .z-\\[1\\] { z-index: 1; }
+                          .z-\\[3\\] { z-index: 3; }
+                          .z-0 { z-index: 0; }
+                          .-z-\\[1\\] { z-index: -1; }
+                          .-mt-1 { margin-top: -0.25rem; }
+                          .-bottom-\\[25\\.1312px\\] { bottom: -25.1312px; }
+                          .object-cover { object-fit: cover; }
+                          .overflow-hidden { overflow: hidden; }
+                          .bg-\\[\\#141414\\] { background-color: #141414; }
+                          .bg-black { background-color: rgb(0 0 0); }
+                          .bg-black\\/70 { background-color: rgb(0 0 0 / 0.7); }
+                          .transition-opacity { transition-property: opacity; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+                          .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+                          .duration-300 { transition-duration: 300ms; }
+                          .duration-500 { transition-duration: 500ms; }
+                          .blur-md { filter: blur(12px); }
+                          .blur-2xl { filter: blur(40px); }
+                          .aspect-square { aspect-ratio: 1 / 1; }
+                        `}
+                      </style>
+                      {gamecards.map((player) => (
+                        <div
+                          key={player.id}
+                          onClick={() => !player.name.toLowerCase().includes("waiting") && handleGameCardClick(player)}
+                          style={{ cursor: player.name.toLowerCase().includes("waiting") ? "default" : "pointer" }}
+                        >
+                          <GameCard player={player} />
+                        </div>
+                      ))}
+                    </ThreeDCarouselWrapper>
                   </div>
                 ) : (
                   <div className="overflow-hidden w-full">
-                    <div className="flex animate-scroll-infinite" style={{ width: "fit-content" }}>
+                    <div className="flex animate-scroll-infinite" style={{ width: "fit-content",height: '230px'}}>
                       {[...Array(2)].map((_, setIndex) => (
-                        <div key={setIndex} className="flex" style={{ gap: "12px" }}>
+                        <div key={setIndex} className="flex">
                           {gamecards.map((player, index) => (
                             <div
                               key={`${setIndex}-${index}`}
-                              style={{ width: "180px", flexShrink: 0 }}
+                              style={{ 
+                                width: "210px", 
+                                flexShrink: 0
+                              }}
                               onClick={() => !player.name.toLowerCase().includes("waiting") && handleGameCardClick(player)}
                               className="cursor-pointer"
                             >

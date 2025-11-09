@@ -1,5 +1,12 @@
-import { Player } from "../ui/Herosection/jakpotreel";
-export const  gamecards: Player[] = [
+export interface Player {
+  id: number;
+  name: string;
+  amount: string;
+  avatar: string;
+  isActive: boolean;
+}
+
+const baseCards: Player[] = [
   {id:0, name: "iamzb", amount: "0.013", avatar: "https://solpot.com/cdn/avatars/420cd5cfdde190315b6e359343b1ac6444090333068ba04a63a7198eced0bd3c.jpeg", isActive: false},
   {id:1, name: "Solildeal", amount: "0.01", avatar: "https://solpot.com/avatars/9.x/thumbs/svg?seed=cupsy&backgroundColor=ad98ff&shapeColor=f1f4dc&scale=80", isActive: true},
   {id:2, name: "BOZO", amount: "0.03", avatar: "https://solpot.com/avatars/9.x/thumbs/svg?seed=cupsy&backgroundColor=ad98ff&shapeColor=f1f4dc&scale=80", isActive: false},
@@ -11,3 +18,11 @@ export const  gamecards: Player[] = [
   {id:8, name: "Waiting", amount: "0.000", avatar: "❓", isActive: false},
   {id:9, name: "Waiting", amount: "0.000", avatar: "❓", isActive: false},
 ];
+
+// Create 4 sets of cards (40 total - doubled from previous 20)
+export const gamecards: Player[] = Array.from({ length: 4 }, (_, setIndex) =>
+  baseCards.map((card) => ({
+    ...card,
+    id: setIndex * baseCards.length + card.id,
+  }))
+).flat();
