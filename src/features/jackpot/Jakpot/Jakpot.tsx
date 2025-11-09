@@ -20,6 +20,9 @@ const Jackpot = () => {
     useState<UserStatsProps | null>(null);
   const [is3DView, setIs3DView] = useState(false);
   const carouselRef = useRef<ThreeDCarouselRef>(null);
+  const [selectedCardIndex, setSelectedCardIndex] = useState<number>(0);
+  const [cards, setCards] = useState(() => gamecards.map(card => ({ ...card, isActive: false })));
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [showWinnerCard, setShowWinnerCard] = useState(true);
   const [winnerData, setWinnerData] = useState({
@@ -122,6 +125,37 @@ const Jackpot = () => {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isUserStatsModalOpen, handleCloseModal]);
 
+  // Update cards' isActive based on selected index
+  useEffect(() => {
+    setCards(prevCards => 
+      prevCards.map((card, index) => ({
+        ...card,
+        isActive: index === selectedCardIndex
+      }))
+    );
+  }, [selectedCardIndex]);
+
+  // Handle rotation change in 3D mode to track selected card
+  const handleRotationChange = useCallback((rotation: number) => {
+    if (!is3DView) return;
+    
+    const totalCards = cards.length;
+    if (totalCards === 0) return;
+    
+    const degreesPerCard = 360 / totalCards;
+    // With rotateNegative, cards are positioned at: 0, -rotDeg, -2*rotDeg, etc.
+    // When container rotates by 'rotation' (negative), each card's position becomes: rotation, -rotDeg + rotation, -2*rotDeg + rotation, etc.
+    // We want to find which card is closest to 0 degrees (facing forward)
+    // Card i's position after rotation: -i * degreesPerCard + rotation
+    // We want to find i such that -i * degreesPerCard + rotation is closest to 0
+    // Solving: i ≈ -rotation / degreesPerCard
+    // Since rotation is negative, -rotation is positive, so we get the correct index
+    const currentIndex = Math.round(rotation / degreesPerCard);
+    // Ensure index is positive and within bounds
+    const positiveIndex = ((currentIndex % totalCards) + totalCards) % totalCards;
+    setSelectedCardIndex(positiveIndex);
+  }, [is3DView, cards.length]);
+
   // Auto-rotate 3D carousel
   useEffect(() => {
     if (!is3DView || !carouselRef.current) return;
@@ -129,6 +163,10 @@ const Jackpot = () => {
     const rotationSpeed = 0.1; // degrees per frame (reduced to 1/3 of original speed)
     let rotation = 0;
     let animationFrame: number;
+    let lastSelectedIndex = -1;
+
+    // Set initial selected card
+    handleRotationChange(0);
 
     const animate = () => {
       rotation -= rotationSpeed; // Negative for left rotation
@@ -136,6 +174,21 @@ const Jackpot = () => {
         rotation = rotation + 360;
       }
       carouselRef.current?.rotate(rotation);
+      
+      // Calculate and update selected card
+      const totalCards = cards.length;
+      if (totalCards > 0) {
+        const degreesPerCard = 360 / totalCards;
+        const currentIndex = Math.round(-rotation / degreesPerCard);
+        const positiveIndex = ((currentIndex % totalCards) + totalCards) % totalCards;
+        
+        // Only update if the index changed to avoid unnecessary re-renders
+        if (positiveIndex !== lastSelectedIndex) {
+          lastSelectedIndex = positiveIndex;
+          setSelectedCardIndex(positiveIndex);
+        }
+      }
+      
       animationFrame = requestAnimationFrame(animate);
     };
 
@@ -146,7 +199,49 @@ const Jackpot = () => {
         cancelAnimationFrame(animationFrame);
       }
     };
-  }, [is3DView]);
+  }, [is3DView, handleRotationChange, cards.length]);
+
+  // Track selected card in 2D mode using scroll position
+  useEffect(() => {
+    if (is3DView || !scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+    const scrollElement = container.querySelector('.animate-scroll-infinite') as HTMLElement;
+    if (!scrollElement) return;
+
+    const updateSelectedCard = () => {
+      const containerRect = container.getBoundingClientRect();
+      const containerCenter = containerRect.left + containerRect.width / 2;
+      
+      const cardElements = container.querySelectorAll('[data-card-index]');
+      let closestCardIndex = 0;
+      let minDistance = Infinity;
+
+      cardElements.forEach((cardEl) => {
+        const cardRect = cardEl.getBoundingClientRect();
+        const cardCenter = cardRect.left + cardRect.width / 2;
+        const distance = Math.abs(cardCenter - containerCenter);
+        
+        if (distance < minDistance) {
+          minDistance = distance;
+          const index = parseInt(cardEl.getAttribute('data-card-index') || '0', 10);
+          closestCardIndex = index;
+        }
+      });
+
+      setSelectedCardIndex(closestCardIndex);
+    };
+
+    // Initial check
+    updateSelectedCard();
+
+    // Update on scroll (for infinite scroll animation)
+    const interval = setInterval(updateSelectedCard, 100);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [is3DView, cards.length]);
 
   const stats = [
     { label: "Jackpot Value", value: jackpotValue.toFixed(3), highlighted: true, icon: "/assets/solana.png" },
@@ -218,6 +313,7 @@ const Jackpot = () => {
                       ref={carouselRef}
                       rotateNegative={true}
                       style={{ width: "100%", height: "100%" }}
+                      onRotationChange={handleRotationChange}
                     >
                       <style>
                         {`
@@ -294,9 +390,10 @@ const Jackpot = () => {
                           .aspect-square { aspect-ratio: 1 / 1; }
                         `}
                       </style>
-                      {gamecards.map((player) => (
+                      {cards.map((player, index) => (
                         <div
                           key={player.id}
+                          data-card-index={index}
                           onClick={() => !player.name.toLowerCase().includes("waiting") && handleGameCardClick(player)}
                           style={{ cursor: player.name.toLowerCase().includes("waiting") ? "default" : "pointer" }}
                         >
@@ -306,13 +403,14 @@ const Jackpot = () => {
                     </ThreeDCarouselWrapper>
                   </div>
                 ) : (
-                  <div className="overflow-hidden w-full">
+                  <div className="overflow-hidden w-full" ref={scrollContainerRef}>
                     <div className="flex animate-scroll-infinite" style={{ width: "fit-content",height: '230px'}}>
                       {[...Array(2)].map((_, setIndex) => (
                         <div key={setIndex} className="flex">
-                          {gamecards.map((player, index) => (
+                          {cards.map((player, index) => (
                             <div
                               key={`${setIndex}-${index}`}
+                              data-card-index={index}
                               style={{ 
                                 width: "210px", 
                                 flexShrink: 0

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { CoinflipLogo, ChevronIcon, SolanaIcon } from '@/shared/icons'
 import { GameRow } from './gamerow'
+import { CoinflipGame } from '../CoinFlipGameModal/coinflipgame'
 interface Player {
   username: string
   level: number
@@ -41,6 +42,7 @@ export const CoinflipGameList: React.FC<CoinflipGameListProps> = ({
   const [amountFilter, setAmountFilter] = useState('all')
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
   const [isAmountMenuOpen, setIsAmountMenuOpen] = useState(false)
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null)
   const sortMenuRef = useRef<HTMLDivElement>(null)
   const amountMenuRef = useRef<HTMLDivElement>(null)
 
@@ -297,9 +299,58 @@ export const CoinflipGameList: React.FC<CoinflipGameListProps> = ({
             game={g as any}
             onJoin={() => onJoinGame?.(g.id)}
             onView={() => onViewGame?.(g.id)}
+            onClick={() => setSelectedGame(g as any)}
           />
         ))}
       </div>
+      {/* CoinflipGame Modal */}
+      {selectedGame && (
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 lg:p-8" 
+          style={{ backgroundColor: "rgba(0, 0, 0, 0.8)" }} 
+          onClick={() => setSelectedGame(null)}
+        >
+          <div 
+            className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CoinflipGame
+              data-id={selectedGame.id}
+              gameId={`#${selectedGame.id}`}
+              player1={{
+                name: selectedGame.player1.username,
+                avatar: selectedGame.player1.avatar,
+                level: selectedGame.player1.level,
+                bet: selectedGame.betAmount,
+                side: selectedGame.player1Choice,
+              }}
+              player2={selectedGame.player2 ? {
+                name: selectedGame.player2.username,
+                avatar: selectedGame.player2.avatar,
+                level: selectedGame.player2.level,
+                bet: selectedGame.betAmount,
+                side: selectedGame.player2Choice || 'heads',
+              } : undefined}
+              status={selectedGame.status === 'waiting' ? 'waiting' : selectedGame.status === 'flipping' ? 'playing' : 'finished'}
+              hashedSeed="eb49e1c0170591159112025d38f5647f46042bb5468a3e89ee4cd563853042a8"
+              secret={selectedGame.status === 'completed' ? 'Revealed' : 'Waiting...'}
+              onClose={() => setSelectedGame(null)}
+              onVerify={() => {
+                // Handle verify action
+                console.log('Verify game:', selectedGame.id)
+              }}
+              onShare={() => {
+                // Handle share action
+                console.log('Share game:', selectedGame.id)
+              }}
+              onJoin={() => {
+                onJoinGame?.(selectedGame.id)
+                setSelectedGame(null)
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

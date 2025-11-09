@@ -60,8 +60,8 @@ export const CoinflipGame: React.FC<CoinflipGameProps> = ({
                 <img
                   src={
                     player1.side === 'heads'
-                      ? '/static/image/heads.4b0cf586.png'
-                      : '/static/image/tails.03d97597.png'
+                      ? '	https://solpot.com/static/image/tails.03d97597.png '
+                      : '	https://solpot.com/static/image/heads.4b0cf586.png'
                   }
                   alt="coin"
                   className="absolute -right-1 -top-1 z-[4] w-9 h-9 rounded-full shadow-[0_0_0_3px_#141414]"
@@ -139,7 +139,7 @@ export const CoinflipGame: React.FC<CoinflipGameProps> = ({
             <div className="relative">
               <div className="relative z-10">
                 <img
-                  src="/static/image/tails.03d97597.png"
+                  src="https://solpot.com/static/image/heads.4b0cf586.png"
                   alt="coin"
                   className="absolute -right-1 -top-1 z-[4] w-9 h-9 rounded-full shadow-[0_0_0_3px_#141414]"
                 />
@@ -147,7 +147,7 @@ export const CoinflipGame: React.FC<CoinflipGameProps> = ({
                   <div className="relative h-[112px] rounded-[24px] p-1 bg-gradient-to-b from-[#38383d] to-[#252527]">
                     <div className="h-[104px] overflow-hidden rounded-[22px] border-2 border-[#222222] shadow-[inset_0_7.5px_15px_0_rgba(0,0,0,0.5),inset_0_10px_20px_0_rgba(255,255,255,0.082)]">
                       <img
-                        src={player2?.avatar || '/img/unknown.webp'}
+                        src={player2?.avatar || 'https://solpot.com/img/unknown.webp'}
                         alt={player2?.name || 'Waiting'}
                         className="w-[100px] h-[100px] object-cover rounded-[22px] bg-black/75 opacity-50"
                       />

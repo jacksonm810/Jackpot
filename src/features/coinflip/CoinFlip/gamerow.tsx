@@ -21,8 +21,9 @@ interface GameRowProps {
   game: Game
   onJoin?: () => void
   onView?: () => void
+  onClick?: () => void
 }
-export const GameRow: React.FC<GameRowProps> = ({ game, onJoin, onView }) => {
+export const GameRow: React.FC<GameRowProps> = ({ game, onJoin, onView, onClick }) => {
   const getLevelColor = (level: number) => {
     if (level >= 100)
       return {
@@ -54,7 +55,10 @@ export const GameRow: React.FC<GameRowProps> = ({ game, onJoin, onView }) => {
   const hasLost = isCompleted && game.player2
   return (
     <div className={`h-[84px] ${isCompleted ? 'opacity-50' : ''}`}>
-      <div className="relative flex w-full items-center justify-between bg-gradient-to-t from-[#222] to-[#303030] rounded-[15px] p-[3px] transition-transform duration-150 hover:scale-[1.01]">
+      <div 
+        onClick={onClick}
+        className="relative flex w-full items-center justify-between bg-gradient-to-t from-[#222] to-[#303030] rounded-[15px] p-[3px] transition-transform duration-150 hover:scale-[1.01] cursor-pointer"
+      >
         <div className="relative flex h-[78px] w-full items-center justify-between gap-4 overflow-hidden bg-[rgba(23,23,33,0.9)] border border-[#1d1d1d] rounded-xl px-6 py-5">
           {/* Decorative borders */}
           <div className="pointer-events-none absolute inset-0 opacity-10 mask-gradient-to-b border-[3px] border-white/80 rounded-xl" />
@@ -160,7 +164,10 @@ export const GameRow: React.FC<GameRowProps> = ({ game, onJoin, onView }) => {
               {game.status === 'waiting' && (
                 <button
                   disabled={!game.player2}
-                  onClick={onJoin}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onJoin?.()
+                  }}
                   className="bg-gradient-to-t from-[#222] to-[#303030] rounded-2xl p-[3px] transition-opacity duration-300 hover:opacity-90 disabled:opacity-50"
                 >
                   <div className="relative h-[38px] bg-gradient-to-b from-[#957aff] to-[#6741ff] border border-[#1d1d1d] rounded-xl p-[2px]">
@@ -201,7 +208,10 @@ export const GameRow: React.FC<GameRowProps> = ({ game, onJoin, onView }) => {
                 </button>
               )}
               <button
-                onClick={onView}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onView?.()
+                }}
                 className="bg-gradient-to-t from-[#222] to-[#303030] rounded-2xl p-[3px] transition-opacity duration-300 hover:opacity-90"
               >
                 <div className="relative h-[38px] w-12 bg-gradient-to-b from-[#454545] to-[#232323] border border-[#1d1d1d] rounded-xl p-[2px]">
